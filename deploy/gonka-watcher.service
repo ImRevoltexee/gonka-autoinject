@@ -1,0 +1,18 @@
+[Unit]
+Description=GonkaRouter auto-inject watcher (9Router)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/gonka-autoinject
+EnvironmentFile=/root/gonka-autoinject/.env
+ExecStart=/usr/bin/python3 watcher.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/gonka-watcher.log
+StandardError=append:/var/log/gonka-watcher.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+# local state
+.env
+data/
+*.jsonl
+*keys*.txt
+proxies*.txt
+verified.json
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# editors / os
+.idea/
+.vscode/
+.DS_Store

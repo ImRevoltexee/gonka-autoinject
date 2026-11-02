@@ -1,0 +1,17 @@
+[Unit]
+Description=GonkaRouter account farm (%i accounts, one-shot)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/gonka-autoinject
+EnvironmentFile=/root/gonka-autoinject/.env
+ExecStart=/usr/bin/python3 farm.py --target %i --workers 6
+TimeoutStartSec=0
+StandardOutput=append:/var/log/gonka-farm.log
+StandardError=append:/var/log/gonka-farm.log
+
+[Install]
+WantedBy=multi-user.target
