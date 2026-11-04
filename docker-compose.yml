@@ -1,0 +1,15 @@
+services:
+  gonka-watcher:
+    build: .
+    container_name: gonka-watcher
+    restart: unless-stopped
+    network_mode: "host"
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Keep the in-container DB path independent of the host username.
+      - ROUTER_DB=/root/.9router/db/data.sqlite
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+      - ${HOME}/.9router:/root/.9router:ro
+    command: ["watcher.py"]

@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.git/
+.gitignore
+
+# local secrets and runtime state (mounted or created at runtime instead)
+.env
+.env.*
+!.env.example
+data/
+*.jsonl
+keys*.txt
+proxies*.txt
+verified.json
+
+# python envs / editors
+.venv/
+venv/
+.idea/
+.vscode/
