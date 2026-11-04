@@ -47,6 +47,9 @@ class ProxyPool:
 
 def opener(proxy=None):
     if proxy:
+        if "@" not in proxy and proxy.count(":") == 3:
+            parts = proxy.split(":")
+            proxy = f"{parts[2]}:{parts[3]}@{parts[0]}:{parts[1]}"
         handler = urllib.request.ProxyHandler({"http": f"http://{proxy}",
                                                "https": f"http://{proxy}"})
     else:

@@ -80,6 +80,8 @@ python3 farm.py --check-proxies            # prove the pool is alive
 python3 farm.py --target 10 --workers 6    # 10 accounts
 python3 inject.py --verify                 # which keys are live
 python3 inject.py --all                    # push them into 9Router
+python3 inject.py --refresh-status         # re-check keys and update 9Router status
+python3 inject.py --fix-priority           # renumber connections 1..N
 ```
 
 Needs a Turnstile solver listening on `127.0.0.1:407` that accepts
@@ -133,7 +135,7 @@ will actually touch:
 | `GONKA_SOLVER_URL` | `http://127.0.0.1:407` | Turnstile solver |
 | `GONKA_WORKERS` | `6` | parallel registrations |
 | `GONKA_OTP_TIMEOUT` | `200` | seconds to wait for the mail |
-| `ROUTER_BASE` | `http://127.0.0.1:20129` | 9Router HTTP API |
+| `ROUTER_BASE` | `http://127.0.0.1:20128` | 9Router HTTP API |
 | `ROUTER_PASSWORD` | — | 9Router admin password |
 | `ROUTER_POLL_INTERVAL` | `20` | watcher poll, seconds |
 
@@ -230,8 +232,18 @@ bottleneck is network wait, not the interpreter.
   it that way.
 - 9Router answers duplicate connections with `409`; the code treats that as
   success and moves on.
+- New connections are validated against `/v1/models` before being created, so
+  the dashboard shows them as **active** instead of **unknown**. Re-run
+  `python3 inject.py --refresh-status` to re-check keys that are already there.
+- New connections get the next free `priority` (`max + 1`), so the dashboard no
+  longer shows every row as `#1`. `python3 inject.py --fix-priority` renumbers
+  existing connections to a unique `1..N` sequence (oldest first).
 - Connection rows are read from SQLite because the HTTP API returns keys masked.
   That is the only reason the DB path is configurable.
+- The **API Key field in 9Router's edit dialog is always blank**: 9Router strips
+  keys from every API response on purpose, so the dashboard cannot display them.
+  The key is still stored (see `data/keys.txt` or the SQLite `data` column) and
+  routes normally. Use `python3 inject.py --verify` if you want proof a key works.
 
 ## Roadmap
 
