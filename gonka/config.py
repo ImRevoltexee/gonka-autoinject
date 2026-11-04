@@ -4,6 +4,27 @@ import os
 from pathlib import Path
 
 
+def _load_env_file(env_path: Path) -> None:
+    if not env_path.is_file():
+        return
+    try:
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k = k.strip()
+                v = v.strip().strip("'\"")
+                if k not in os.environ:
+                    os.environ[k] = v
+    except Exception:
+        pass
+
+
+_load_env_file(Path(__file__).resolve().parent.parent / ".env")
+
+
 def _p(name: str, default: str) -> Path:
     return Path(os.environ.get(name, default)).expanduser()
 
@@ -43,7 +64,7 @@ MAX_PROXY_ATTEMPTS = _i("GONKA_MAX_PROXY_ATTEMPTS", 5)
 OTP_TIMEOUT = _i("GONKA_OTP_TIMEOUT", 200)
 
 # --- 9Router ----------------------------------------------------------------
-ROUTER_BASE = os.environ.get("ROUTER_BASE", "http://127.0.0.1:20129")
+ROUTER_BASE = os.environ.get("ROUTER_BASE", "http://127.0.0.1:20128")
 ROUTER_PASSWORD = os.environ.get("ROUTER_PASSWORD", "")
 ROUTER_DB = _p("ROUTER_DB", "~/.9router/db/data.sqlite")
 NODE_NAME = os.environ.get("ROUTER_NODE_NAME", "GONKA")
